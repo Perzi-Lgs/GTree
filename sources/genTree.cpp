@@ -104,14 +104,27 @@ void genTree::event()
     }
 }
 
+void genTree::changeLifeSpawn()
+{
+    for (auto &i : m_point)
+    {
+        if (m_year == i.m_data.intDate[0] && m_month == i.m_data.intDate[1])
+            i.initLifeSpawn();
+        else if (m_year > i.m_data.intDate[0] || m_year == i.m_data.intDate[0] && m_month < i.m_data.intDate[1])
+        {
+            i.decreaseLifeSpawn();
+        }
+    }
+}
+
 void genTree::run()
 {
     sf::Clock clock;
-    int nbr = 500;
-    
+
     while (m_window.isOpen()) {
         // * Init the View
-        if (nbr == 500) {
+        
+        if (m_year == 1000) {
             sf::View view = m_window.getView();
             view.setCenter(0, 0);
             m_window.setView(view);
@@ -121,17 +134,22 @@ void genTree::run()
         
         sf::Time elapsed1 = clock.getElapsedTime();
         if (elapsed1.asMilliseconds() >= 50) {
-            m_window.draw(m_background);
-            nbr++;
-            for (auto &i : m_point)
-            {
-                if (nbr == i.m_data.intDate[0] || nbr - 1 == i.m_data.intDate[0])
-                    m_window.draw(i.getShape());
-            }
+            std::cout << "Year " << m_year << " Month " << m_month << std::endl;
+            m_year = (m_month == 12) ? m_year + 1 : m_year;
+            m_month = (m_month != 12) ? m_month + 1 : 1;
             clock.restart();
-            m_window.display();
-            m_window.clear();
         }
+
+
+        m_window.draw(m_background);
+        changeLifeSpawn();
+        for (auto &i : m_point)
+        {
+            if (i.isAlive() == true)
+                m_window.draw(i.getShape());
+        }
+        m_window.display();
+        m_window.clear();
         scalePoint(m_window.getView().getSize());
     }
 }

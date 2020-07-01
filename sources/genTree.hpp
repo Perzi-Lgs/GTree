@@ -16,10 +16,14 @@ private:
     std::vector<n_data> m_data;
     sf::Texture texture;
     sf::Sprite m_background;
+
+    int m_year = 1000;
+    int m_month = 1;
 private:
     void scalePoint(sf::Vector2f actualSize);
     void generatePoint(n_data data);
     void event();
+    void changeLifeSpawn();
 
 public:
     genTree() : m_window(sf::VideoMode(2000, 1000) ,"Test AG", sf::Style::Resize)
